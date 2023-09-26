@@ -1,20 +1,32 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { useState } from "react"
+import { SafeAreaView, StatusBar, StyleSheet } from "react-native"
+import NotaEditor from "./src/componentes/NotaEditor"
+import AsyncStorage from "@react-native-async-storage/async-storage"
 
 export default function App() {
+
+  const [notas, setNotas] = useState([])
+
+  async function mostraNotas(){
+    const todasChaves = await AsyncStorage.getAllKeys()
+    const todasNotas = await AsyncStorage.multiGet(todasChaves)
+    setNotas(todasNotas)
+    console.log(todasNotas)
+  }
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+    <SafeAreaView style={estilos.container}>
+      <NotaEditor mostraNotas={mostraNotas}/>
+      <StatusBar/>
+    </SafeAreaView>
+  )
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+const estilos = StyleSheet.create({
+	container: {
+		flex: 1,
+		alignItems: "stretch",
+		justifyContent: "flex-start",
+	},
+})
+
